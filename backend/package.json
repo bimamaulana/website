@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "scripts": {
-      "start": "node server.js",
-      "server": "npx nodemon server.js",
-      "client": "npm start --prefix ../frontend",
-      "dev": "concurrently \"npm run server\" \"npm run client\""
-    }
+    "start": "node server.js",
+    "server": "npx nodemon server.js",
+    "client": "npm start --prefix ../frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "",
