@@ -1,6 +1,5 @@
 {
   "deploy": {
-    "workdir": "backend",
-    "start": "node server.js"
+    "workdir": "backend"
   }
 }
