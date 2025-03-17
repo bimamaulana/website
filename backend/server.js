@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const QRCode = require("qrcode");
 const moment = require("moment-timezone");
+require("dotenv").config();
 
 const app = express();
 const port = 8000;
@@ -14,10 +15,10 @@ app.use(express.json());
 
 // Konfigurasi koneksi ke database MySQL
 const db = mysql.createConnection({
-  host: "b2dd0dn4tin6zkrc0kct-mysql.services.clever-cloud.com",
-  user: "uj6edcsupf7rmdgv",
-  password: "1c9QSQtEZtPbpzJpwkDB",
-  database: "b2dd0dn4tin6zkrc0kct",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DBNAME,
 });
 
 // Koneksi ke database
