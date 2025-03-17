@@ -9,7 +9,13 @@ require("dotenv").config();
 const app = express();
 const port = 8000;
 
-app.use(cors()); // Pastikan CORS diaktifkan
+app.use(
+  cors({
+    origin: "*", // Mengizinkan semua origin (gunakan domain spesifik untuk produksi)
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+  })
+); // Pastikan CORS diaktifkan
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
