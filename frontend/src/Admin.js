@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const API_URL = "http://localhost:8000/data";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -15,13 +15,13 @@ const App = () => {
   }, []);
 
   const ambilData = async () => {
-    const res = await fetch(API_URL);
+    const res = await fetch(`${API_URL}/data`);
     const result = await res.json();
     setData(result);
   };
 
   const tambahData = async () => {
-    await fetch(API_URL, {
+    await fetch(`${API_URL}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nama, nim }),

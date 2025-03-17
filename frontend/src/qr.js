@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 export default function QR() {
   const [qrCode, setQrCode] = useState("");
   const [timestamp, setTimestamp] = useState("");
@@ -19,7 +21,7 @@ export default function QR() {
 
   const fetchQRCode = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/qrcode");
+      const response = await axios.get(`${API_URL}/qrcode`);
       setQrCode(response.data.qr);
       setTimestamp(response.data.timestamp);
     } catch (error) {

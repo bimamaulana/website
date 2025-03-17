@@ -4,7 +4,7 @@ console.log("Backend URL:", API_URL);
 
 export async function fetchMahasiswa() {
   try {
-    const response = await fetch("http://localhost:8000/data");
+    const response = await fetch(`${API_URL}/data`);
     if (!response.ok) {
       throw new Error("Gagal mengambil data");
     }

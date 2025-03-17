@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { signUp } from "../api";
+import { signUp } from "./api";
 
 export default function SignUp() {
   const [nama, setNama] = useState("");
