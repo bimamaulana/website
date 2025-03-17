@@ -1,4 +1,6 @@
 const API_URL = "http://localhost:8000"; // Sesuaikan dengan backend
+//const API_URL = process.env.REACT_APP_API_URL;
+console.log("Backend URL:", API_URL);
 
 export async function fetchMahasiswa() {
   try {

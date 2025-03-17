@@ -14,10 +14,10 @@ app.use(express.json());
 
 // Konfigurasi koneksi ke database MySQL
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "mahasiswa",
-  password: "",
-  database: "coba",
+  host: "b2dd0dn4tin6zkrc0kct-mysql.services.clever-cloud.com",
+  user: "uj6edcsupf7rmdgv",
+  password: "1c9QSQtEZtPbpzJpwkDB",
+  database: "b2dd0dn4tin6zkrc0kct",
 });
 
 // Koneksi ke database
