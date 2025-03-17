@@ -11,7 +11,7 @@ const port = 8000;
 
 app.use(
   cors({
-    origin: "*", // Mengizinkan semua origin (gunakan domain spesifik untuk produksi)
+    origin: ["http://localhost:3000"], //"*", // Mengizinkan semua origin (gunakan domain spesifik untuk produksi)
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   })
