@@ -9,11 +9,7 @@ require("dotenv").config();
 const app = express();
 const port = 8000;
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
-); // Pastikan CORS diaktifkan
+app.use(cors()); // Pastikan CORS diaktifkan
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
