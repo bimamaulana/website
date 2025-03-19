@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -14,13 +14,13 @@ const Dashboard = () => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false, // Format 24 jam
+      hour12: false,
     });
   };
 
   const generateQRCode = () => {
     const now = new Date();
-    now.setSeconds(0, 0); // Set detik dan milidetik ke 0 agar tetap stabil dalam 1 menit
+    now.setSeconds(0, 0);
     const formattedDate = now.toLocaleDateString("id-ID");
     const formattedTime = formatTime24Hour(now);
 
@@ -32,19 +32,23 @@ const Dashboard = () => {
       })
     );
 
-    // Perbarui hanya satu baris tabel
     setLatestTimestamp({ tanggal: formattedDate, waktu: formattedTime });
   };
 
   useEffect(() => {
-    generateQRCode(); // Generate pertama kali saat halaman dimuat
+    generateQRCode();
 
     const interval = setInterval(() => {
       generateQRCode();
-    }, 60000); // Update QR Code setiap 1 menit
+    }, 60000);
 
-    return () => clearInterval(interval); // Bersihkan interval saat unmount
+    return () => clearInterval(interval);
   }, [user]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -55,12 +59,10 @@ const Dashboard = () => {
       </p>
       <p>QR Code ini akan diperbarui setiap menit.</p>
 
-      {/* Rata tengah QR Code */}
       <div className="flex justify-center mt-4">
         <QRCodeCanvas value={qrData} size={200} />
       </div>
 
-      {/* Tabel Timestamp (Hanya 1 Baris) */}
       <h2 className="text-lg font-semibold mt-6">Waktu Terakhir QR Code</h2>
       <div className="flex justify-center mt-4">
         <table className="border border-gray-800 w-1/2 text-center">
@@ -82,6 +84,13 @@ const Dashboard = () => {
           </tbody>
         </table>
       </div>
+
+      <button
+        onClick={handleLogout}
+        className="mt-6 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+      >
+        Logout
+      </button>
     </div>
   );
 };
