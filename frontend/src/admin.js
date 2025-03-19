@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -9,18 +9,18 @@ const Admin = () => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(`${backendUrl}/data`);
       setData(response.data);
     } catch (error) {
       console.error("Gagal mengambil data", error);
     }
-  };
+  }, [backendUrl]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleLogout = () => {
     localStorage.removeItem("aksesAdmin");

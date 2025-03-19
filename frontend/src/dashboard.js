@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
 const Dashboard = () => {
@@ -18,7 +18,8 @@ const Dashboard = () => {
     });
   };
 
-  const generateQRCode = () => {
+  // Gunakan useCallback agar tidak berubah setiap render
+  const generateQRCode = useCallback(() => {
     const now = new Date();
     now.setSeconds(0, 0);
     const formattedDate = now.toLocaleDateString("id-ID");
@@ -33,7 +34,7 @@ const Dashboard = () => {
     );
 
     setLatestTimestamp({ tanggal: formattedDate, waktu: formattedTime });
-  };
+  }, [user]); // Tambahkan 'user' sebagai dependency
 
   useEffect(() => {
     generateQRCode();
@@ -43,7 +44,7 @@ const Dashboard = () => {
     }, 60000);
 
     return () => clearInterval(interval);
-  }, [user]);
+  }, [generateQRCode]); // Tambahkan 'generateQRCode' di dependency array
 
   const handleLogout = () => {
     localStorage.removeItem("user");

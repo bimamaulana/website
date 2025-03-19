@@ -15,8 +15,10 @@ const Signup = () => {
         `${process.env.REACT_APP_BACKEND_URL}/signup`,
         { nama, nim }
       );
-      localStorage.setItem("user", JSON.stringify({ nama, nim })); // Simpan user di localStorage
-      navigate("/dashboard"); // Redirect ke Dashboard setelah signup sukses
+
+      localStorage.setItem("user", JSON.stringify({ nama, nim }));
+      setPesan(res.data.message || "Pendaftaran berhasil!"); // Gunakan pesan dari backend
+      navigate("/dashboard");
     } catch (error) {
       setPesan(error.response?.data?.message || "Pendaftaran gagal");
     }
