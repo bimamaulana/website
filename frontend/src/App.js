@@ -7,10 +7,10 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { useState } from "react";
-import Login from "./Login";
-import Signup from "./Signup";
-import Dashboard from "./Dashboard";
-import Admin from "./Admin";
+import Login from "./login";
+import Signup from "./signup";
+import Dashboard from "./dashboard";
+import Admin from "./admin";
 
 const App = () => {
   return (
