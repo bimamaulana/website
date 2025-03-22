@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "preinstall": "npm install --omit=dev",
     "start": "node server.js"
   },
   "engines": {
