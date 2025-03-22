@@ -11,7 +11,7 @@ const port = process.env.PORT || 8000;
 
 app.use(
   cors({
-    origin: ["https://pacific-cat-production.up.railway.app"], //"*", // Mengizinkan semua origin (gunakan domain spesifik untuk produksi)
+    origin: ["https://pacific-cat-production.up.railway.app", "localhost:3000"], //"*", // Mengizinkan semua origin (gunakan domain spesifik untuk produksi)
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type"],
   })
