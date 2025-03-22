@@ -157,5 +157,5 @@ setInterval(() => {
 }, 300000); // 5 menit (300.000 ms)
 
 app.listen(port, () => {
-  console.log(`Server berjalan di localhost:${port}`);
+  console.log(`Server berjalan di http://localhost:${port}`);
 });
