@@ -11,6 +11,7 @@ import Login from "./login";
 import Signup from "./signup";
 import Dashboard from "./dashboard";
 import Admin from "./admin";
+import QR from "./qr"; // Import QR.js
 
 const App = () => {
   return (
@@ -26,8 +27,11 @@ const App = () => {
           <Link to="/login" className="mr-4 text-blue-500">
             | Login |
           </Link>
-          <Link to="/signup" className="text-blue-500">
+          <Link to="/signup" className="mr-4 text-blue-500">
             | Sign Up |
+          </Link>
+          <Link to="/qr" className="text-blue-500">
+            | QR Code |
           </Link>
         </nav>
 
@@ -52,6 +56,7 @@ const App = () => {
               </ProtectedUserRoute>
             }
           />
+          <Route path="/qr" element={<QR />} />
         </Routes>
       </div>
     </Router>
