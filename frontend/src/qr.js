@@ -10,7 +10,7 @@ export default function QR() {
   const fetchQRCode = async () => {
     try {
       const response = await axios.get(`${API_URL}/qrcode`);
-      setQrCode(`${API_URL}/qr/${response.data.timestamp}`);
+      setQrCode(`${API_URL}/qrcode/qr/`);
       setTimestamp(response.data.timestamp);
     } catch (error) {
       console.error("Gagal mengambil QR Code", error);
