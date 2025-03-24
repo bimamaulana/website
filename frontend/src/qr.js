@@ -6,8 +6,6 @@ const API_URL = process.env.REACT_APP_API_URL;
 export default function QR() {
   const [qrCode, setQrCode] = useState("");
   const [timestamp, setTimestamp] = useState("");
-  const [accessGranted, setAccessGranted] = useState(false);
-  const [inputCode, setInputCode] = useState("");
 
   const fetchQRCode = async () => {
     try {
@@ -20,35 +18,10 @@ export default function QR() {
   };
 
   useEffect(() => {
-    if (accessGranted) {
-      fetchQRCode();
-      const interval = setInterval(fetchQRCode, 60000);
-      return () => clearInterval(interval);
-    }
-  }, [accessGranted]);
-
-  const handleCodeSubmit = () => {
-    if (inputCode === "12345") {
-      setAccessGranted(true);
-    } else {
-      alert("Kode salah! Akses ditolak.");
-    }
-  };
-
-  if (!accessGranted) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h2>Masukkan Kode Akses</h2>
-        <input
-          type="password"
-          value={inputCode}
-          onChange={(e) => setInputCode(e.target.value)}
-          placeholder="Masukkan kode"
-        />
-        <button onClick={handleCodeSubmit}>Submit</button>
-      </div>
-    );
-  }
+    fetchQRCode();
+    const interval = setInterval(fetchQRCode, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
