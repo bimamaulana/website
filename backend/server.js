@@ -141,14 +141,8 @@ app.post("/signup", (req, res) => {
 });
 
 //qr code
-app.get("/qrcode", async (req, res) => {
-  try {
-    const timestamp = moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm"); // Format timestamp
-    const qrCodeURL = await QRCode.toDataURL(timestamp); // Buat QR dari timestamp
-    res.json({ qr: qrCodeURL, timestamp });
-  } catch (err) {
-    res.status(500).json({ error: "Gagal membuat QR Code" });
-  }
+app.get("/qrcode", (req, res) => {
+  res.json({ qr: "Generated QR Code", timestamp: new Date().toISOString() });
 });
 
 setInterval(() => {
