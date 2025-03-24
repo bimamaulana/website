@@ -1,50 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
-import { QRCodeCanvas } from "qrcode.react";
+import { useState, useEffect } from "react";
+import { QrReader } from "react-qr-reader";
 
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  const [qrData, setQrData] = useState("");
-  const [latestTimestamp, setLatestTimestamp] = useState({
-    tanggal: "",
-    waktu: "",
-  });
+  const [scanResult, setScanResult] = useState("");
 
-  const formatTime24Hour = (date) => {
-    return date.toLocaleTimeString("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
+  const handleScan = (data) => {
+    if (data) {
+      setScanResult(data);
+    }
   };
 
-  // Gunakan useCallback agar tidak berubah setiap render
-  const generateQRCode = useCallback(() => {
-    const now = new Date();
-    now.setSeconds(0, 0);
-    const formattedDate = now.toLocaleDateString("id-ID");
-    const formattedTime = formatTime24Hour(now);
-
-    setQrData(
-      JSON.stringify({
-        nama: user?.nama,
-        nim: user?.nim,
-        waktu: now.toISOString(),
-      })
-    );
-
-    setLatestTimestamp({ tanggal: formattedDate, waktu: formattedTime });
-  }, [user]); // Tambahkan 'user' sebagai dependency
-
-  useEffect(() => {
-    generateQRCode();
-
-    const interval = setInterval(() => {
-      generateQRCode();
-    }, 60000);
-
-    return () => clearInterval(interval);
-  }, [generateQRCode]); // Tambahkan 'generateQRCode' di dependency array
+  const handleError = (err) => {
+    console.error(err);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -58,33 +27,29 @@ const Dashboard = () => {
         Selamat datang, <span className="font-semibold">{user?.nama}</span> (
         {user?.nim})
       </p>
-      <p>QR Code ini akan diperbarui setiap menit.</p>
+      <p>Arahkan kamera ke QR Code untuk memindai.</p>
 
-      <div className="flex justify-center mt-4">
-        <QRCodeCanvas value={qrData} size={200} />
+      <div className="w-64 h-64 mt-4">
+        <QrReader
+          constraints={{ facingMode: "environment" }}
+          onResult={(result, error) => {
+            if (result) {
+              handleScan(result?.text);
+            }
+            if (error) {
+              handleError(error);
+            }
+          }}
+          style={{ width: "100%" }}
+        />
       </div>
 
-      <h2 className="text-lg font-semibold mt-6">Waktu Terakhir QR Code</h2>
-      <div className="flex justify-center mt-4">
-        <table className="border border-gray-800 w-1/2 text-center">
-          <thead>
-            <tr className="bg-gray-300 border border-gray-800">
-              <th className="border border-gray-800 p-2">Tanggal</th>
-              <th className="border border-gray-800 p-2">Waktu</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border border-gray-800">
-              <td className="border border-gray-800 p-2">
-                {latestTimestamp.tanggal}
-              </td>
-              <td className="border border-gray-800 p-2">
-                {latestTimestamp.waktu}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {scanResult && (
+        <div className="mt-4 p-4 border border-gray-800">
+          <h2 className="text-lg font-semibold">Hasil Scan</h2>
+          <p>{scanResult}</p>
+        </div>
+      )}
 
       <button
         onClick={handleLogout}
