@@ -1,19 +1,35 @@
-import { useState, useEffect } from "react";
-import { QrReader } from "react-qr-reader";
+import { useEffect, useRef, useState } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [scanResult, setScanResult] = useState("");
+  const scannerRef = useRef(null);
 
-  const handleScan = (data) => {
-    if (data) {
-      setScanResult(data);
-    }
-  };
+  useEffect(() => {
+    const scanner = new Html5QrcodeScanner("qr-reader", {
+      fps: 10,
+      qrbox: 250,
+    });
 
-  const handleError = (err) => {
-    console.error(err);
-  };
+    scanner.render(
+      (decodedText) => {
+        setScanResult(decodedText);
+        scanner.clear();
+      },
+      (errorMessage) => {
+        console.warn(errorMessage);
+      }
+    );
+
+    scannerRef.current = scanner;
+
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.clear();
+      }
+    };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -29,20 +45,7 @@ const Dashboard = () => {
       </p>
       <p>Arahkan kamera ke QR Code untuk memindai.</p>
 
-      <div className="w-64 h-64 mt-4">
-        <QrReader
-          constraints={{ facingMode: "environment" }}
-          onResult={(result, error) => {
-            if (result) {
-              handleScan(result?.text);
-            }
-            if (error) {
-              handleError(error);
-            }
-          }}
-          style={{ width: "100%" }}
-        />
-      </div>
+      <div id="qr-reader" className="w-64 h-64 mt-4"></div>
 
       {scanResult && (
         <div className="mt-4 p-4 border border-gray-800">
