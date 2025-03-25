@@ -6,6 +6,7 @@ const Dashboard = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
+  const [debugInfo, setDebugInfo] = useState(""); // State untuk log waktu
   const scannerRef = useRef(null);
 
   const getCurrentTimeString = () => {
@@ -40,8 +41,10 @@ const Dashboard = () => {
           const scannedDateTime = `${match[1]}, ${match[2]}`;
           const currentTime = getCurrentTimeString();
 
-          console.log("QR Code Time:", scannedDateTime);
-          console.log("Device Time:", currentTime);
+          // Simpan hasil log ke state
+          setDebugInfo(
+            `QR Code Time: ${scannedDateTime} | Device Time: ${currentTime}`
+          );
 
           if (scannedDateTime === currentTime) {
             setScanResult("Berhasil");
@@ -50,6 +53,7 @@ const Dashboard = () => {
           }
         } else {
           setScanResult("QR Code tidak valid");
+          setDebugInfo("Format QR Code salah");
         }
 
         scanner
@@ -80,6 +84,7 @@ const Dashboard = () => {
 
   const handleRescan = () => {
     setScanResult("");
+    setDebugInfo(""); // Reset debug info
     startScanner();
   };
 
@@ -113,6 +118,14 @@ const Dashboard = () => {
           >
             Scan Lagi
           </button>
+        </div>
+      )}
+
+      {/* Menampilkan log debug */}
+      {debugInfo && (
+        <div className="mt-4 p-4 border border-gray-600 text-sm bg-gray-100 text-gray-800">
+          <h2 className="text-lg font-semibold">Log Debug</h2>
+          <p>{debugInfo}</p>
         </div>
       )}
 
