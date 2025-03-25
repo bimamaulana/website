@@ -10,17 +10,17 @@ const Dashboard = () => {
     if (scannerRef.current) {
       scannerRef.current.clear();
     }
-    const scanner = new Html5QrcodeScanner("qr-reader", {
+    scannerRef.current = new Html5QrcodeScanner("qr-reader", {
       fps: 10,
       qrbox: 250,
     });
 
-    scanner.render(
+    scannerRef.current.render(
       (decodedText) => {
         const regex = /^Laboratorium - \d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}$/;
         if (regex.test(decodedText)) {
           setScanResult("Berhasil");
-          scanner.clear();
+          scannerRef.current.clear();
         } else {
           setScanResult("");
         }
@@ -29,8 +29,6 @@ const Dashboard = () => {
         console.warn(errorMessage);
       }
     );
-
-    scannerRef.current = scanner;
   };
 
   useEffect(() => {
@@ -47,8 +45,8 @@ const Dashboard = () => {
     setScanResult("");
     if (scannerRef.current) {
       scannerRef.current.clear();
+      startScanner();
     }
-    startScanner();
   };
 
   const handleLogout = () => {
