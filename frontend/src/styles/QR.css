@@ -30,3 +30,10 @@
 .qr-code {
   margin-top: 16px;
 }
+
+.header {
+  font-size: 18px; /* Perbesar ukuran font */
+  font-weight: bold; /* Buat lebih tebal */
+  text-align: center; /* Posisikan di tengah */
+  padding: 10px 0; /* Beri ruang atas-bawah */
+}
