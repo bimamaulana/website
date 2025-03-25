@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import QRCode from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 const QR = () => {
   const [timestamp, setTimestamp] = useState(Date.now().toString());
@@ -17,7 +17,7 @@ const QR = () => {
       <h1 className="text-2xl font-bold">QR Code Generator</h1>
       <p className="my-4">QR Code akan diperbarui setiap menit</p>
       <div className="flex justify-center">
-        <QRCode value={timestamp} size={200} />
+        <QRCodeCanvas value={timestamp} size={200} />
       </div>
     </div>
   );
