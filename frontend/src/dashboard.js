@@ -6,25 +6,21 @@ const Dashboard = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
-  const [debugInfo, setDebugInfo] = useState(""); // State untuk log waktu
   const scannerRef = useRef(null);
 
   const getCurrentTimeString = () => {
     const now = new Date();
     const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Januari = 0
+    const month = String(now.getMonth() + 1).padStart(2, "0");
     const year = now.getFullYear();
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
-
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
 
   const startScanner = useCallback(() => {
     if (scannerRef.current) {
-      scannerRef.current
-        .clear()
-        .catch((err) => console.warn("Scanner sudah dihentikan:", err));
+      scannerRef.current.clear().catch(() => {});
     }
 
     const scanner = new Html5QrcodeScanner("qr-reader", {
@@ -32,59 +28,40 @@ const Dashboard = () => {
       qrbox: 250,
     });
 
-    scanner.render(
-      (decodedText) => {
-        const regex = /^Laboratorium - (\d{2}\/\d{2}\/\d{4}), (\d{2}:\d{2})$/;
-        const match = decodedText.match(regex);
+    scanner.render((decodedText) => {
+      const regex = /^Laboratorium - (\d{2}/\d{2}/\d{4}), (\d{2}:\d{2})$/;
+      const match = decodedText.match(regex);
 
-        if (match) {
-          const scannedDateTime = `${match[1]}, ${match[2]}`;
-          const currentTime = getCurrentTimeString();
+      if (match) {
+        const scannedDateTime = `${match[1]}, ${match[2]}`;
+        const currentTime = getCurrentTimeString();
 
-          // Simpan hasil log ke state
-          setDebugInfo(
-            `QR Code Time: ${scannedDateTime} | Device Time: ${currentTime}`
-          );
-
-          if (scannedDateTime === currentTime) {
-            setScanResult("Berhasil");
-          } else {
-            setScanResult("Waktu QR Code tidak valid");
-          }
+        if (scannedDateTime === currentTime) {
+          setScanResult("Berhasil");
         } else {
-          setScanResult("QR Code tidak valid");
-          setDebugInfo("Format QR Code salah");
+          setScanResult("Waktu QR Code tidak valid");
         }
-
-        scanner
-          .clear()
-          .catch((err) =>
-            console.warn("Error saat menghentikan scanner:", err)
-          );
-      },
-      (errorMessage) => {
-        console.warn(errorMessage);
+      } else {
+        setScanResult("QR Code tidak valid");
       }
-    );
+
+      scanner.clear().catch(() => {});
+    });
 
     scannerRef.current = scanner;
   }, []);
 
   useEffect(() => {
     startScanner();
-
     return () => {
       if (scannerRef.current) {
-        scannerRef.current
-          .clear()
-          .catch((err) => console.warn("Scanner sudah dihentikan:", err));
+        scannerRef.current.clear().catch(() => {});
       }
     };
   }, [startScanner]);
 
   const handleRescan = () => {
     setScanResult("");
-    setDebugInfo(""); // Reset debug info
     startScanner();
   };
 
@@ -98,16 +75,13 @@ const Dashboard = () => {
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
       {user ? (
         <p>
-          Selamat datang, <span className="font-semibold">{user.nama}</span> (
-          {user.nim})
+          Selamat datang, <span className="font-semibold">{user.nama}</span> ({user.nim})
         </p>
       ) : (
         <p>User tidak ditemukan</p>
       )}
       <p>Arahkan kamera ke QR Code untuk memindai.</p>
-
       <div id="qr-reader" className="w-64 h-64 mt-4"></div>
-
       {scanResult && (
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
@@ -120,15 +94,6 @@ const Dashboard = () => {
           </button>
         </div>
       )}
-
-      {/* Menampilkan log debug */}
-      {debugInfo && (
-        <div className="mt-4 p-4 border border-gray-600 text-sm bg-gray-100 text-gray-800">
-          <h2 className="text-lg font-semibold">Log Debug</h2>
-          <p>{debugInfo}</p>
-        </div>
-      )}
-
       <button
         onClick={handleLogout}
         className="mt-6 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
