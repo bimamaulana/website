@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import "./QR.css";
+import "./styles/QR.css";
 
 const QR = () => {
   const getFormattedTime = () => {
