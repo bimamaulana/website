@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
 const QR = () => {
-  const getFormattedTime = () =>
-    new Date().toLocaleString(undefined, {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+  const getFormattedTime = () => {
+    const now = new Date();
+    const tanggal = now.toLocaleDateString("id-ID"); // Format DD/MM/YYYY
+    const waktu = now.toLocaleTimeString("id-ID", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
     });
+
+    return `${tanggal}, ${waktu}`;
+  };
 
   const [qrValue, setQrValue] = useState(
     `Laboratorium - ${getFormattedTime()}`
@@ -18,8 +20,7 @@ const QR = () => {
 
   useEffect(() => {
     const updateTimestamp = () => {
-      const newQrValue = `Laboratorium - ${getFormattedTime()}`;
-      setQrValue(newQrValue);
+      setQrValue(`Laboratorium - ${getFormattedTime()}`);
 
       const now = new Date();
       const secondsUntilNextMinute = 60 - now.getSeconds();
