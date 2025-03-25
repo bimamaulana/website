@@ -4,31 +4,36 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [scanResult, setScanResult] = useState("");
+  const [valid, setValid] = useState(false);
   const scannerRef = useRef(null);
 
   const startScanner = () => {
     if (scannerRef.current) {
       scannerRef.current.clear();
     }
-    scannerRef.current = new Html5QrcodeScanner("qr-reader", {
+    const scanner = new Html5QrcodeScanner("qr-reader", {
       fps: 10,
       qrbox: 250,
     });
 
-    scannerRef.current.render(
+    scanner.render(
       (decodedText) => {
         const regex = /^Laboratorium - \d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}$/;
         if (regex.test(decodedText)) {
           setScanResult("Berhasil");
-          scannerRef.current.clear();
+          setValid(true);
+          scanner.clear();
         } else {
           setScanResult("");
+          setValid(false);
         }
       },
       (errorMessage) => {
         console.warn(errorMessage);
       }
     );
+
+    scannerRef.current = scanner;
   };
 
   useEffect(() => {
@@ -43,10 +48,11 @@ const Dashboard = () => {
 
   const handleRescan = () => {
     setScanResult("");
+    setValid(false);
     if (scannerRef.current) {
       scannerRef.current.clear();
-      startScanner();
     }
+    startScanner();
   };
 
   const handleLogout = () => {
@@ -69,12 +75,14 @@ const Dashboard = () => {
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
           <p>{scanResult}</p>
-          <button
-            onClick={handleRescan}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Scan Lagi
-          </button>
+          {!valid && (
+            <button
+              onClick={handleRescan}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Scan Lagi
+            </button>
+          )}
         </div>
       )}
 
