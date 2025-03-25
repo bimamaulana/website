@@ -9,7 +9,13 @@ const Dashboard = () => {
   const [valid, setValid] = useState(false);
   const scannerRef = useRef(null);
 
-  useEffect(() => {
+  const startScanner = () => {
+    if (scannerRef.current) {
+      scannerRef.current
+        .clear()
+        .catch((err) => console.warn("Scanner sudah dihentikan:", err));
+    }
+
     const scanner = new Html5QrcodeScanner("qr-reader", {
       fps: 10,
       qrbox: 250,
@@ -37,6 +43,10 @@ const Dashboard = () => {
     );
 
     scannerRef.current = scanner;
+  };
+
+  useEffect(() => {
+    startScanner();
 
     return () => {
       if (scannerRef.current) {
@@ -50,12 +60,7 @@ const Dashboard = () => {
   const handleRescan = () => {
     setScanResult("");
     setValid(false);
-    if (scannerRef.current) {
-      scannerRef.current
-        .clear()
-        .catch((err) => console.warn("Scanner sudah dihentikan:", err));
-      scannerRef.current.render();
-    }
+    startScanner(); // Panggil ulang fungsi scanner untuk reset
   };
 
   const handleLogout = () => {
