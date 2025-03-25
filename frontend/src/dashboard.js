@@ -21,7 +21,11 @@ const Dashboard = () => {
         if (regex.test(decodedText)) {
           setScanResult("Berhasil");
           setValid(true);
-          scanner.clear();
+          scanner
+            .clear()
+            .catch((err) =>
+              console.warn("Error saat menghentikan scanner:", err)
+            );
         } else {
           setScanResult("QR Code tidak valid");
           setValid(false);
@@ -35,15 +39,23 @@ const Dashboard = () => {
     scannerRef.current = scanner;
 
     return () => {
-      scanner.clear();
+      if (scannerRef.current) {
+        scannerRef.current
+          .clear()
+          .catch((err) => console.warn("Scanner sudah dihentikan:", err));
+      }
     };
   }, []);
 
   const handleRescan = () => {
     setScanResult("");
     setValid(false);
-    scannerRef.current?.clear();
-    scannerRef.current?.render();
+    if (scannerRef.current) {
+      scannerRef.current
+        .clear()
+        .catch((err) => console.warn("Scanner sudah dihentikan:", err));
+      scannerRef.current.render();
+    }
   };
 
   const handleLogout = () => {
