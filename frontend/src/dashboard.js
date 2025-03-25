@@ -7,6 +7,9 @@ const Dashboard = () => {
   const scannerRef = useRef(null);
 
   const startScanner = () => {
+    if (scannerRef.current) {
+      scannerRef.current.clear();
+    }
     const scanner = new Html5QrcodeScanner("qr-reader", {
       fps: 10,
       qrbox: 250,
@@ -37,6 +40,9 @@ const Dashboard = () => {
 
   const handleRescan = () => {
     setScanResult("");
+    if (scannerRef.current) {
+      scannerRef.current.clear();
+    }
     startScanner();
   };
 
