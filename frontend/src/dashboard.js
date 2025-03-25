@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
 const Dashboard = () => {
@@ -20,7 +20,7 @@ const Dashboard = () => {
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
 
-  const startScanner = () => {
+  const startScanner = useCallback(() => {
     if (scannerRef.current) {
       scannerRef.current
         .clear()
@@ -65,7 +65,7 @@ const Dashboard = () => {
     );
 
     scannerRef.current = scanner;
-  };
+  }, []);
 
   useEffect(() => {
     startScanner();
@@ -77,7 +77,7 @@ const Dashboard = () => {
           .catch((err) => console.warn("Scanner sudah dihentikan:", err));
       }
     };
-  }, []);
+  }, [startScanner]);
 
   const handleRescan = () => {
     setScanResult("");
