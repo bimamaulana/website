@@ -4,14 +4,13 @@ import { QRCodeCanvas } from "qrcode.react";
 const QR = () => {
   const getFormattedTime = () => {
     const now = new Date();
-    const tanggal = now.toLocaleDateString("id-ID"); // Format DD/MM/YYYY
-    const waktu = now.toLocaleTimeString("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
+    const tanggal = String(now.getDate()).padStart(2, "0"); // Pastikan 2 digit
+    const bulan = String(now.getMonth() + 1).padStart(2, "0"); // getMonth() dimulai dari 0
+    const tahun = now.getFullYear();
+    const jam = String(now.getHours()).padStart(2, "0");
+    const menit = String(now.getMinutes()).padStart(2, "0");
 
-    return `${tanggal}, ${waktu}`;
+    return `${tanggal}/${bulan}/${tahun}, ${jam}:${menit}`;
   };
 
   const [qrValue, setQrValue] = useState(
