@@ -29,7 +29,7 @@ const Dashboard = () => {
     });
 
     scanner.render((decodedText) => {
-      const regex = /^Laboratorium - (\d{2}/\d{2}/\d{4}), (\d{2}:\d{2})$/;
+      const regex = /^Laboratorium - (\d{2}\/\d{2}\/\d{4}), (\d{2}:\d{2})$/;
       const match = decodedText.match(regex);
 
       if (match) {
@@ -75,7 +75,8 @@ const Dashboard = () => {
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
       {user ? (
         <p>
-          Selamat datang, <span className="font-semibold">{user.nama}</span> ({user.nim})
+          Selamat datang, <span className="font-semibold">{user.nama}</span> (
+          {user.nim})
         </p>
       ) : (
         <p>User tidak ditemukan</p>
