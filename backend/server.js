@@ -25,7 +25,7 @@ const db = mysql.createConnection({
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DBNAME,
-  dbport: process.env.DB_PORT || 3306,
+  //dbport: process.env.DB_PORT || 3306,
 });
 
 // Koneksi ke database
