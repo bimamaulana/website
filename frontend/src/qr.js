@@ -13,18 +13,28 @@ const QR = () => {
     });
 
   const [timestamp, setTimestamp] = useState(getFormattedTime());
+  const [qrValue, setQrValue] = useState(
+    `Laboratorium - ${getFormattedTime()}`
+  );
 
   useEffect(() => {
     const updateTimestamp = () => {
-      setTimestamp(getFormattedTime());
+      const newTimestamp = getFormattedTime();
+      setTimestamp(newTimestamp);
+      setQrValue(`Laboratorium - ${newTimestamp}`);
 
       const now = new Date();
-      const secondsUntilNextMinute = 60 - now.getSeconds(); // Hitung sisa detik menuju menit berikutnya
+      const secondsUntilNextMinute = 60 - now.getSeconds();
 
       setTimeout(() => {
-        setTimestamp(getFormattedTime());
+        const newTimestamp = getFormattedTime();
+        setTimestamp(newTimestamp);
+        setQrValue(`Laboratorium - ${newTimestamp}`);
+
         setInterval(() => {
-          setTimestamp(getFormattedTime());
+          const newTimestamp = getFormattedTime();
+          setTimestamp(newTimestamp);
+          setQrValue(`Laboratorium - ${newTimestamp}`);
         }, 60000);
       }, secondsUntilNextMinute * 1000);
     };
@@ -39,9 +49,9 @@ const QR = () => {
       <h1 className="text-2xl font-bold">QR Code Generator</h1>
       <p className="my-4">QR Code akan diperbarui setiap menit</p>
       <div className="flex justify-center">
-        <QRCodeCanvas value={timestamp} size={200} />
+        <QRCodeCanvas value={qrValue} size={200} />
       </div>
-      <p className="mt-4">Isi QR Code: {timestamp}</p>
+      <p className="mt-4">Isi QR Code: {qrValue}</p>
     </div>
   );
 };
