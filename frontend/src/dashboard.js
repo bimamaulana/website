@@ -6,16 +6,15 @@ const Dashboard = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
-  const [valid, setValid] = useState(false);
   const scannerRef = useRef(null);
 
   const getCurrentTimeString = () => {
     const now = new Date();
-    const day = String(now.getUTCDate()).padStart(2, "0");
-    const month = String(now.getUTCMonth() + 1).padStart(2, "0"); // Januari = 0
-    const year = now.getUTCFullYear();
-    const hours = String(now.getUTCHours()).padStart(2, "0");
-    const minutes = String(now.getUTCMinutes()).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Januari = 0
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
 
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
@@ -46,14 +45,11 @@ const Dashboard = () => {
 
           if (scannedDateTime === currentTime) {
             setScanResult("Berhasil");
-            setValid(true);
           } else {
             setScanResult("Waktu QR Code tidak valid");
-            setValid(false);
           }
         } else {
           setScanResult("QR Code tidak valid");
-          setValid(false);
         }
 
         scanner
@@ -84,7 +80,6 @@ const Dashboard = () => {
 
   const handleRescan = () => {
     setScanResult("");
-    setValid(false);
     startScanner();
   };
 
@@ -112,11 +107,6 @@ const Dashboard = () => {
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
           <p>{scanResult}</p>
-          {valid ? (
-            <p className="text-green-500 font-semibold">QR Code valid!</p>
-          ) : (
-            <p className="text-red-500 font-semibold">QR Code tidak valid</p>
-          )}
           <button
             onClick={handleRescan}
             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
