@@ -19,6 +19,7 @@ const QR = () => {
       <div className="flex justify-center">
         <QRCodeCanvas value={timestamp} size={200} />
       </div>
+      <p className="mt-4">Isi QR Code: {timestamp}</p>
     </div>
   );
 };
