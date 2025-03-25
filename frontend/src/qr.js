@@ -1,41 +1,26 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import QRCode from "qrcode.react";
 
-const API_URL = process.env.REACT_APP_API_URL;
-
-export default function QR() {
-  const [qrCode, setQrCode] = useState("");
-  const [timestamp, setTimestamp] = useState("");
-
-  const fetchQRCode = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/qrcode`);
-      setQrCode(`${API_URL}/qrcode/qr/`);
-      setTimestamp(response.data.timestamp);
-    } catch (error) {
-      console.error("Gagal mengambil QR Code", error);
-    }
-  };
+const QR = () => {
+  const [timestamp, setTimestamp] = useState(Date.now().toString());
 
   useEffect(() => {
-    fetchQRCode();
-    const interval = setInterval(fetchQRCode, 60000);
+    const interval = setInterval(() => {
+      setTimestamp(Date.now().toString());
+    }, 60000);
+
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>QR Code</h1>
-      <p>{timestamp ? `Updated: ${timestamp}` : "Loading..."}</p>
-      {qrCode && (
-        <p style={{ fontSize: "20px", fontWeight: "bold" }}>{qrCode}</p>
-      )}
-      <button
-        onClick={() => window.location.reload()}
-        style={{ marginTop: "20px", padding: "10px", cursor: "pointer" }}
-      >
-        Refresh
-      </button>
+    <div className="text-center p-4">
+      <h1 className="text-2xl font-bold">QR Code Generator</h1>
+      <p className="my-4">QR Code akan diperbarui setiap menit</p>
+      <div className="flex justify-center">
+        <QRCode value={timestamp} size={200} />
+      </div>
     </div>
   );
-}
+};
+
+export default QR;
