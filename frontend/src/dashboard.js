@@ -60,7 +60,7 @@ const Dashboard = () => {
   const handleRescan = () => {
     setScanResult("");
     setValid(false);
-    startScanner(); // Panggil ulang fungsi scanner untuk reset
+    startScanner(); // Panggil ulang scanner
   };
 
   const handleLogout = () => {
