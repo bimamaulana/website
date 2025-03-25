@@ -22,11 +22,11 @@ const Dashboard = () => {
         if (regex.test(decodedText)) {
           setScanResult("Berhasil");
           setValid(true);
-          scanner.clear();
         } else {
-          setScanResult("");
+          setScanResult("Gagal, coba lagi");
           setValid(false);
         }
+        scanner.clear();
       },
       (errorMessage) => {
         console.warn(errorMessage);
@@ -38,20 +38,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     startScanner();
-
-    return () => {
-      if (scannerRef.current) {
-        scannerRef.current.clear();
-      }
-    };
+    return () => scannerRef.current?.clear();
   }, []);
 
   const handleRescan = () => {
     setScanResult("");
     setValid(false);
-    if (scannerRef.current) {
-      scannerRef.current.clear();
-    }
     startScanner();
   };
 
@@ -75,14 +67,12 @@ const Dashboard = () => {
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
           <p>{scanResult}</p>
-          {!valid && (
-            <button
-              onClick={handleRescan}
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Scan Lagi
-            </button>
-          )}
+          <button
+            onClick={handleRescan}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Scan Lagi
+          </button>
         </div>
       )}
 
