@@ -4,7 +4,6 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [scanResult, setScanResult] = useState("");
-  const [valid, setValid] = useState(false);
   const scannerRef = useRef(null);
 
   const startScanner = () => {
@@ -21,11 +20,9 @@ const Dashboard = () => {
         const regex = /^Laboratorium - \d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}$/;
         if (regex.test(decodedText)) {
           setScanResult("Berhasil");
-          setValid(true);
           scanner.clear();
         } else {
           setScanResult("");
-          setValid(false);
         }
       },
       (errorMessage) => {
@@ -48,7 +45,6 @@ const Dashboard = () => {
 
   const handleRescan = () => {
     setScanResult("");
-    setValid(false);
     if (scannerRef.current) {
       scannerRef.current.clear();
     }
