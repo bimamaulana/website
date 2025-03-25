@@ -6,7 +6,7 @@ const Dashboard = () => {
   const [scanResult, setScanResult] = useState("");
   const scannerRef = useRef(null);
 
-  useEffect(() => {
+  const startScanner = () => {
     const scanner = new Html5QrcodeScanner("qr-reader", {
       fps: 10,
       qrbox: 250,
@@ -23,6 +23,10 @@ const Dashboard = () => {
     );
 
     scannerRef.current = scanner;
+  };
+
+  useEffect(() => {
+    startScanner();
 
     return () => {
       if (scannerRef.current) {
@@ -30,6 +34,11 @@ const Dashboard = () => {
       }
     };
   }, []);
+
+  const handleRescan = () => {
+    setScanResult("");
+    startScanner();
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -51,6 +60,12 @@ const Dashboard = () => {
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
           <p>{scanResult}</p>
+          <button
+            onClick={handleRescan}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Scan Lagi
+          </button>
         </div>
       )}
 
