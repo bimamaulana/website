@@ -1,24 +1,12 @@
-/* Pastikan seluruh halaman memiliki tinggi penuh */
-body,
-html {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f3f4f6;
-}
-
-/* Kontainer utama agar semua elemen ada di tengah */
 .qr-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
+  background-color: #f3f4f6;
 }
 
-/* Box untuk QR Code */
 .qr-box {
   text-align: center;
   padding: 24px;
@@ -30,18 +18,15 @@ html {
   border: 1px solid #d1d5db;
 }
 
-/* Judul QR */
 .qr-title {
   font-size: 24px;
   font-weight: bold;
 }
 
-/* Teks keterangan */
 .qr-text {
   margin-top: 16px;
 }
 
-/* QR Code agar ada spasi */
 .qr-code {
   margin-top: 16px;
 }
