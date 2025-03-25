@@ -15,11 +15,23 @@ const QR = () => {
   const [timestamp, setTimestamp] = useState(getFormattedTime());
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const updateTimestamp = () => {
       setTimestamp(getFormattedTime());
-    }, 60000);
 
-    return () => clearInterval(interval);
+      const now = new Date();
+      const secondsUntilNextMinute = 60 - now.getSeconds(); // Hitung sisa detik menuju menit berikutnya
+
+      setTimeout(() => {
+        setTimestamp(getFormattedTime());
+        setInterval(() => {
+          setTimestamp(getFormattedTime());
+        }, 60000);
+      }, secondsUntilNextMinute * 1000);
+    };
+
+    updateTimestamp();
+
+    return () => clearInterval(updateTimestamp);
   }, []);
 
   return (
