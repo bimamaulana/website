@@ -12,29 +12,23 @@ const QR = () => {
       hour12: false,
     });
 
-  const [timestamp, setTimestamp] = useState(getFormattedTime());
   const [qrValue, setQrValue] = useState(
     `Laboratorium - ${getFormattedTime()}`
   );
 
   useEffect(() => {
     const updateTimestamp = () => {
-      const newTimestamp = getFormattedTime();
-      setTimestamp(newTimestamp);
-      setQrValue(`Laboratorium - ${newTimestamp}`);
+      const newQrValue = `Laboratorium - ${getFormattedTime()}`;
+      setQrValue(newQrValue);
 
       const now = new Date();
       const secondsUntilNextMinute = 60 - now.getSeconds();
 
       setTimeout(() => {
-        const newTimestamp = getFormattedTime();
-        setTimestamp(newTimestamp);
-        setQrValue(`Laboratorium - ${newTimestamp}`);
+        setQrValue(`Laboratorium - ${getFormattedTime()}`);
 
         setInterval(() => {
-          const newTimestamp = getFormattedTime();
-          setTimestamp(newTimestamp);
-          setQrValue(`Laboratorium - ${newTimestamp}`);
+          setQrValue(`Laboratorium - ${getFormattedTime()}`);
         }, 60000);
       }, secondsUntilNextMinute * 1000);
     };
