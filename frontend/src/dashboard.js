@@ -9,6 +9,17 @@ const Dashboard = () => {
   const [valid, setValid] = useState(false);
   const scannerRef = useRef(null);
 
+  const getCurrentTimeString = () => {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Januari = 0
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+
+    return `${day}/${month}/${year}, ${hours}:${minutes}`;
+  };
+
   const startScanner = () => {
     if (scannerRef.current) {
       scannerRef.current
@@ -23,19 +34,30 @@ const Dashboard = () => {
 
     scanner.render(
       (decodedText) => {
-        const regex = /^Laboratorium - \d{2}\/\d{2}\/\d{4}, \d{2}:\d{2}$/;
-        if (regex.test(decodedText)) {
-          setScanResult("Berhasil");
-          setValid(true);
-          scanner
-            .clear()
-            .catch((err) =>
-              console.warn("Error saat menghentikan scanner:", err)
-            );
+        const regex = /^Laboratorium - (\d{2}\/\d{2}\/\d{4}), (\d{2}:\d{2})$/;
+        const match = decodedText.match(regex);
+
+        if (match) {
+          const scannedDateTime = `${match[1]}, ${match[2]}`;
+          const currentTime = getCurrentTimeString();
+
+          if (scannedDateTime === currentTime) {
+            setScanResult("Berhasil");
+            setValid(true);
+          } else {
+            setScanResult("Waktu QR Code tidak valid");
+            setValid(false);
+          }
         } else {
           setScanResult("QR Code tidak valid");
           setValid(false);
         }
+
+        scanner
+          .clear()
+          .catch((err) =>
+            console.warn("Error saat menghentikan scanner:", err)
+          );
       },
       (errorMessage) => {
         console.warn(errorMessage);
@@ -60,7 +82,7 @@ const Dashboard = () => {
   const handleRescan = () => {
     setScanResult("");
     setValid(false);
-    startScanner(); // Panggil ulang scanner
+    startScanner();
   };
 
   const handleLogout = () => {
