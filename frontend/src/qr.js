@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
+import moment from "moment-timezone";
 
 const QR = () => {
-  const [timestamp, setTimestamp] = useState(Date.now().toString());
+  const getFormattedTime = () =>
+    moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm");
+
+  const [timestamp, setTimestamp] = useState(getFormattedTime());
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimestamp(Date.now().toString());
+      setTimestamp(getFormattedTime());
     }, 60000);
 
     return () => clearInterval(interval);
