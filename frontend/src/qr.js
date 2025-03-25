@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
+import "./QR.css";
 
 const QR = () => {
   const getFormattedTime = () => {
@@ -39,14 +40,14 @@ const QR = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="text-center p-6 bg-white shadow-lg rounded-lg w-full max-w-md flex flex-col items-center border border-gray-300">
-        <h1 className="text-2xl font-bold">QR Code Generator</h1>
-        <p className="my-4">QR Code akan diperbarui setiap menit</p>
-        <div className="flex justify-center">
+    <div className="qr-container">
+      <div className="qr-box">
+        <h1 className="qr-title">QR Code Generator</h1>
+        <p className="qr-text">QR Code akan diperbarui setiap menit</p>
+        <div className="qr-code">
           <QRCodeCanvas value={qrValue} size={200} />
         </div>
-        <p className="mt-4 text-center">Isi QR Code: {qrValue}</p>
+        <p className="qr-text">Isi QR Code: {qrValue}</p>
       </div>
     </div>
   );
