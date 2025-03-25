@@ -4,8 +4,8 @@ import { QRCodeCanvas } from "qrcode.react";
 const QR = () => {
   const getFormattedTime = () => {
     const now = new Date();
-    const tanggal = String(now.getDate()).padStart(2, "0"); // Pastikan 2 digit
-    const bulan = String(now.getMonth() + 1).padStart(2, "0"); // getMonth() dimulai dari 0
+    const tanggal = String(now.getDate()).padStart(2, "0");
+    const bulan = String(now.getMonth() + 1).padStart(2, "0");
     const tahun = now.getFullYear();
     const jam = String(now.getHours()).padStart(2, "0");
     const menit = String(now.getMinutes()).padStart(2, "0");
@@ -39,13 +39,15 @@ const QR = () => {
   }, []);
 
   return (
-    <div className="text-center p-4">
-      <h1 className="text-2xl font-bold">QR Code Generator</h1>
-      <p className="my-4">QR Code akan diperbarui setiap menit</p>
-      <div className="flex justify-center">
-        <QRCodeCanvas value={qrValue} size={200} />
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-center p-6 bg-white shadow-lg rounded-lg">
+        <h1 className="text-2xl font-bold">QR Code Generator</h1>
+        <p className="my-4">QR Code akan diperbarui setiap menit</p>
+        <div className="flex justify-center">
+          <QRCodeCanvas value={qrValue} size={200} />
+        </div>
+        <p className="mt-4">Isi QR Code: {qrValue}</p>
       </div>
-      <p className="mt-4">Isi QR Code: {qrValue}</p>
     </div>
   );
 };
