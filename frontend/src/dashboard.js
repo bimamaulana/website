@@ -11,11 +11,11 @@ const Dashboard = () => {
 
   const getCurrentTimeString = () => {
     const now = new Date();
-    const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Januari = 0
-    const year = now.getFullYear();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const day = String(now.getUTCDate()).padStart(2, "0");
+    const month = String(now.getUTCMonth() + 1).padStart(2, "0"); // Januari = 0
+    const year = now.getUTCFullYear();
+    const hours = String(now.getUTCHours()).padStart(2, "0");
+    const minutes = String(now.getUTCMinutes()).padStart(2, "0");
 
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
@@ -40,6 +40,9 @@ const Dashboard = () => {
         if (match) {
           const scannedDateTime = `${match[1]}, ${match[2]}`;
           const currentTime = getCurrentTimeString();
+
+          console.log("QR Code Time:", scannedDateTime);
+          console.log("Device Time:", currentTime);
 
           if (scannedDateTime === currentTime) {
             setScanResult("Berhasil");
