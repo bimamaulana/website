@@ -25,12 +25,14 @@ const db = mysql.createConnection({
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DBNAME,
+  dbport: process.env.DB_PORT || 3306,
 });
 
 // Koneksi ke database
 db.connect((err) => {
   if (err) {
     console.error("Koneksi gagal:", err);
+    process.exit(1); // Keluar dari proses jika koneksi gagal
     return;
   }
   console.log("Terhubung ke database");

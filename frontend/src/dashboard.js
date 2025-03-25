@@ -18,6 +18,19 @@ const Dashboard = () => {
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
 
+  const sendLoginData = useCallback(() => {
+    if (user) {
+      fetch(
+        "https://script.google.com/macros/s/AKfycbxzcDpV3CbeD1XIi59ZNMjVgKLbpBkFGtz4nLIob98PPZqCOX7JJfsLiRtXZume2-7UpA/exec",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nama: user.nama, nim: user.nim }),
+        }
+      );
+    }
+  }, [user]);
+
   const startScanner = useCallback(() => {
     if (scannerRef.current) {
       scannerRef.current.clear().catch(() => {});
@@ -52,13 +65,14 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    sendLoginData();
     startScanner();
     return () => {
       if (scannerRef.current) {
         scannerRef.current.clear().catch(() => {});
       }
     };
-  }, [startScanner]);
+  }, [startScanner, sendLoginData]);
 
   const handleRescan = () => {
     setScanResult("");
