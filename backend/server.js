@@ -108,7 +108,7 @@ app.post("/data2", (req, res) => {
     return res.status(400).json({ message: "Nama dan NIM wajib diisi" });
   }
 
-  const sql = "INSERT INTO history (nama, nim) VALUES (?, ?)"; // Sesuaikan dengan tabel yang digunakan
+  const sql = "INSERT IGNORE INTO history (nama, nim) VALUES (?, ?)"; // Sesuaikan dengan tabel yang digunakan
 
   db2.query(sql, [nama, nim], (err, result) => {
     if (err) {
