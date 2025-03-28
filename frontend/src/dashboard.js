@@ -74,7 +74,7 @@ const Dashboard = () => {
     const data = {
       nama: user.nama,
       nim: user.nim,
-      waktu: getCurrentTimeString(),
+      //waktu: getCurrentTimeString(),
     };
 
     try {
