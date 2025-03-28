@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import axios from "axios";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
 const Dashboard = () => {
@@ -7,10 +6,7 @@ const Dashboard = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
-  const [isScanSuccessful, setIsScanSuccessful] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const scannerRef = useRef(null);
-
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const getCurrentTimeString = () => {
@@ -22,6 +18,15 @@ const Dashboard = () => {
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
+
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/data`);
+      setData(response.data);
+    } catch (error) {
+      console.error("Gagal mengambil data", error);
+    }
+  }, [backendUrl]);
 
   const startScanner = useCallback(() => {
     if (scannerRef.current) {
@@ -43,14 +48,11 @@ const Dashboard = () => {
 
         if (scannedDateTime === currentTime) {
           setScanResult("Berhasil");
-          setIsScanSuccessful(true);
         } else {
           setScanResult("Waktu QR Code tidak valid");
-          setIsScanSuccessful(false);
         }
       } else {
         setScanResult("QR Code tidak valid");
-        setIsScanSuccessful(false);
       }
 
       scanner.clear().catch(() => {});
@@ -70,39 +72,12 @@ const Dashboard = () => {
 
   const handleRescan = () => {
     setScanResult("");
-    setIsScanSuccessful(false);
     startScanner();
   };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     window.location.reload();
-  };
-
-  const handleSaveToDatabase = async () => {
-    if (!user) return alert("User tidak ditemukan!");
-
-    setIsSubmitting(true);
-
-    try {
-      const response = await axios.post(`${backendUrl}/api/save`, {
-        nama: user.nama,
-        nim: user.nim,
-      });
-
-      if (response.data.message) {
-        alert("Data berhasil disimpan!");
-        setIsScanSuccessful(false);
-      } else {
-        alert("Gagal menyimpan data: " + response.data.error);
-      }
-    } catch (error) {
-      alert(
-        "Terjadi kesalahan: " + (error.response?.data?.error || error.message)
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
@@ -129,15 +104,6 @@ const Dashboard = () => {
             Scan Lagi
           </button>
         </div>
-      )}
-      {isScanSuccessful && (
-        <button
-          onClick={handleSaveToDatabase}
-          className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Mengirim..." : "Kirim Data"}
-        </button>
       )}
       <button
         onClick={handleLogout}
