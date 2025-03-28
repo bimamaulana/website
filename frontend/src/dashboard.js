@@ -68,7 +68,7 @@ const Dashboard = () => {
     startScanner();
   };
 
-  const handleSaveToDatabase = async () => {
+  const handleSaveToDatabase = async (id) => {
     if (!user) return;
 
     const data = {
