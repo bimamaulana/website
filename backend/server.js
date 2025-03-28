@@ -100,6 +100,29 @@ app.post("/data", (req, res) => {
 //cara jalankan di terminal :
 // curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"nama": "John Doe", "nim": "12345678"}'
 
+//tambah data database 2
+app.post("/absen", (req, res) => {
+  const { nama, nim } = req.body;
+  const waktu = new Date(); // Waktu absen otomatis
+
+  if (!nama || !nim) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Data tidak lengkap" });
+  }
+
+  const sql = "INSERT INTO history (nama, nim, waktu) VALUES (?, ?, ?)";
+  db2.query(sql, [nama, nim, waktu], (err, result) => {
+    if (err) {
+      console.error("Gagal menyimpan absen:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Gagal menyimpan absen" });
+    }
+    res.json({ success: true, message: "Absen berhasil disimpan" });
+  });
+});
+
 //delete
 app.delete("/data/:id", (req, res) => {
   const { id } = req.params;
@@ -174,6 +197,19 @@ app.post("/signup", (req, res) => {
 //qr code
 app.get("/qrcode", (req, res) => {
   res.json({ qr: "Generated QR Code", timestamp: new Date().toISOString() });
+});
+
+//history
+app.get("/history", (req, res) => {
+  const sql = "SELECT * FROM history ORDER BY waktu DESC";
+  db2.query(sql, (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Gagal mengambil data history" });
+    }
+    res.json(results);
+  });
 });
 
 setInterval(() => {
