@@ -101,16 +101,15 @@ app.post("/data", (req, res) => {
 // curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"nama": "John Doe", "nim": "12345678"}'
 
 // Endpoint untuk menyimpan data absen
-app.post("/api/save/:id", (req, res) => {
+app.post("/api/save", (req, res) => {
   const { nama, nim, waktu } = req.body;
-  const { id } = req.params;
 
   if (!nama || !nim || !waktu) {
     return res.status(400).json({ error: "Semua data harus diisi" });
   }
 
-  const sql = "INSERT INTO history (id, nama, nim, waktu) VALUES (?, ?, ?, ?)";
-  db2.query(sql, [id, nama, nim, waktu], (err, result) => {
+  const sql = "INSERT INTO history (nama, nim, waktu) VALUES (?, ?, ?)";
+  db2.query(sql, [nama, nim, waktu], (err, result) => {
     if (err) {
       console.error("Error saat menyimpan data:", err);
       return res.status(500).json({ error: "Gagal menyimpan data" });

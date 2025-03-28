@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import axios from "axios";
 
 const Dashboard = () => {
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
-  const [isSaved, setIsSaved] = useState(false);
   const scannerRef = useRef(null);
 
   const getCurrentTimeString = () => {
@@ -40,7 +38,6 @@ const Dashboard = () => {
 
         if (scannedDateTime === currentTime) {
           setScanResult("Berhasil");
-          setIsSaved(false);
         } else {
           setScanResult("Waktu QR Code tidak valid");
         }
@@ -68,33 +65,6 @@ const Dashboard = () => {
     startScanner();
   };
 
-  const handleSaveToDatabase = async (id) => {
-    if (!user) return;
-
-    const data = {
-      nama: user.nama,
-      nim: user.nim,
-      //waktu: getCurrentTimeString(),
-    };
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/save/${id}`,
-        data
-      );
-
-      if (response.status === 200) {
-        setIsSaved(true);
-        alert("Data berhasil disimpan!");
-      } else {
-        alert("Gagal menyimpan data.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Terjadi kesalahan saat menyimpan data.");
-    }
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("user");
     window.location.reload();
@@ -117,17 +87,6 @@ const Dashboard = () => {
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
           <p>{scanResult}</p>
-          {scanResult === "Berhasil" && !isSaved && (
-            <button
-              onClick={() => handleSaveToDatabase(user.id)}
-              className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-            >
-              Simpan ke Database
-            </button>
-          )}
-          {isSaved && (
-            <p className="text-green-600 mt-2">Data sudah disimpan!</p>
-          )}
           <button
             onClick={handleRescan}
             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
