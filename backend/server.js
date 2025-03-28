@@ -101,7 +101,7 @@ app.post("/data", (req, res) => {
 // curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"nama": "John Doe", "nim": "12345678"}'
 
 // Endpoint untuk menyimpan data absen
-app.post("/api/save", (req, res) => {
+app.post("/api/save:id", (req, res) => {
   const { nama, nim, waktu } = req.body;
 
   if (!nama || !nim || !waktu) {
