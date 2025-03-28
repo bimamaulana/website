@@ -17,8 +17,6 @@ const QR = () => {
   const [qrValue, setQrValue] = useState(
     `Laboratorium - ${getFormattedTime()}`
   );
-  const [scanResult, setScanResult] = useState("");
-  const [inputScan, setInputScan] = useState("");
 
   useEffect(() => {
     const updateTimestamp = () => {
@@ -41,30 +39,6 @@ const QR = () => {
     return () => clearInterval(updateTimestamp);
   }, []);
 
-  // Simulasi "scan" dengan input manual
-  const handleManualScan = () => {
-    if (inputScan.trim() !== "") {
-      setScanResult(inputScan);
-
-      const [nama, nim] = inputScan.split(","); // Format QR: "Nama,NIM"
-
-      fetch(`${process.env.REACT_APP_BACKEND_URL}/absen`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nama, nim }),
-      })
-        .then((res) => res.json())
-        .then((response) => {
-          if (response.success) {
-            alert("✅ Absen berhasil!");
-          } else {
-            alert("❌ Gagal absen!");
-          }
-        })
-        .catch((err) => console.error("Error:", err));
-    }
-  };
-
   return (
     <div className="qr-container">
       <div className="qr-box">
@@ -75,32 +49,6 @@ const QR = () => {
         </div>
         <p className="qr-text">Isi QR Code: {qrValue}</p>
       </div>
-
-      {/* Input untuk memasukkan hasil scan secara manual */}
-      <div className="qr-box">
-        <h2 className="qr-title">Masukkan Hasil Scan:</h2>
-        <input
-          type="text"
-          value={inputScan}
-          onChange={(e) => setInputScan(e.target.value)}
-          className="border p-2 w-full"
-          placeholder="Masukkan Nama,NIM"
-        />
-        <button
-          onClick={handleManualScan}
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-        >
-          Simpan ke Database
-        </button>
-      </div>
-
-      {/* Menampilkan hasil scan */}
-      {scanResult && (
-        <div className="qr-box">
-          <h2 className="qr-title">Hasil Scan:</h2>
-          <p className="qr-text">{scanResult}</p>
-        </div>
-      )}
     </div>
   );
 };

@@ -101,26 +101,26 @@ app.post("/data", (req, res) => {
 // curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"nama": "John Doe", "nim": "12345678"}'
 
 //tambah data database 2
-app.post("/absen", (req, res) => {
-  const { nama, nim } = req.body;
-  const waktu = new Date(); // Waktu absen otomatis
+app.post("/api/absen", async (req, res) => {
+  const { nama, nim, waktu } = req.body;
 
-  if (!nama || !nim) {
+  if (!nama || !nim || !waktu) {
     return res
       .status(400)
       .json({ success: false, message: "Data tidak lengkap" });
   }
 
-  const sql = "INSERT INTO history (nama, nim, waktu) VALUES (?, ?, ?)";
-  db2.query(sql, [nama, nim, waktu], (err, result) => {
-    if (err) {
-      console.error("Gagal menyimpan absen:", err);
-      return res
-        .status(500)
-        .json({ success: false, message: "Gagal menyimpan absen" });
-    }
-    res.json({ success: true, message: "Absen berhasil disimpan" });
-  });
+  try {
+    await db.query("INSERT INTO history (nama, nim, waktu) VALUES (?, ?, ?)", [
+      nama,
+      nim,
+      waktu,
+    ]);
+    res.json({ success: true, message: "Absen berhasil" });
+  } catch (error) {
+    console.error("❌ Gagal menyimpan data:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 });
 
 //delete

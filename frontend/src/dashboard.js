@@ -18,18 +18,27 @@ const Dashboard = () => {
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
 
-  const sendLoginData = useCallback(() => {
-    if (user) {
-      fetch(
-        "https://script.google.com/macros/s/AKfycbxzcDpV3CbeD1XIi59ZNMjVgKLbpBkFGtz4nLIob98PPZqCOX7JJfsLiRtXZume2-7UpA/exec",
+  const sendToDatabase = async (nama, nim, waktu) => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/absen`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nama: user.nama, nim: user.nim }),
+          body: JSON.stringify({ nama, nim, waktu }),
         }
       );
+
+      const data = await response.json();
+      if (data.success) {
+        console.log("✅ Data berhasil disimpan:", data);
+      } else {
+        console.error("❌ Gagal menyimpan data:", data.message);
+      }
+    } catch (error) {
+      console.error("❌ Error mengirim data:", error);
     }
-  }, [user]);
+  };
 
   const startScanner = useCallback(() => {
     if (scannerRef.current) {
@@ -51,6 +60,11 @@ const Dashboard = () => {
 
         if (scannedDateTime === currentTime) {
           setScanResult("Berhasil");
+
+          // Kirim data user ke database jika berhasil scan
+          if (user) {
+            sendToDatabase(user.nama, user.nim, scannedDateTime);
+          }
         } else {
           setScanResult("Waktu QR Code tidak valid");
         }
@@ -62,17 +76,16 @@ const Dashboard = () => {
     });
 
     scannerRef.current = scanner;
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    sendLoginData();
     startScanner();
     return () => {
       if (scannerRef.current) {
         scannerRef.current.clear().catch(() => {});
       }
     };
-  }, [startScanner, sendLoginData]);
+  }, [startScanner]);
 
   const handleRescan = () => {
     setScanResult("");
