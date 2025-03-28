@@ -82,7 +82,7 @@ const Dashboard = () => {
     if (!user) return alert("User tidak ditemukan!");
 
     setIsSubmitting(true);
-    const waktu = getCurrentTimeString();
+    //const waktu = getCurrentTimeString();
 
     try {
       const response = await fetch(`${backendUrl}/api/save`, {
