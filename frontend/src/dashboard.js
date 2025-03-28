@@ -23,13 +23,17 @@ const Dashboard = () => {
   const handleCreate = async () => {
     if (user?.nama && user?.nim) {
       try {
-        await axios.post(`${backendUrl}/api/save`, {
+        const response = await axios.post(`${backendUrl}/api/save`, {
           nama: user.nama,
           nim: user.nim,
         });
+        console.log("Response:", response.data);
         setScanResult("Data berhasil disimpan!");
       } catch (error) {
-        console.error("Gagal menambahkan data", error);
+        console.error(
+          "Gagal menambahkan data:",
+          error.response?.data || error.message
+        );
       }
     }
   };
