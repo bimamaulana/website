@@ -7,8 +7,6 @@ const Dashboard = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
-  const [nama, setNama] = useState(user?.nama || "");
-  const [nim, setNim] = useState(user?.nim || "");
   const scannerRef = useRef(null);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -23,9 +21,12 @@ const Dashboard = () => {
   };
 
   const handleCreate = async () => {
-    if (nama && nim) {
+    if (user?.nama && user?.nim) {
       try {
-        await axios.post(`${backendUrl}/api/save`, { nama, nim });
+        await axios.post(`${backendUrl}/api/save`, {
+          nama: user.nama,
+          nim: user.nim,
+        });
         setScanResult("Data berhasil disimpan!");
       } catch (error) {
         console.error("Gagal menambahkan data", error);
