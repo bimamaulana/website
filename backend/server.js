@@ -102,22 +102,16 @@ app.post("/data", (req, res) => {
 
 // Endpoint untuk menyimpan data absen
 app.post("/api/save", async (req, res) => {
-  const { nama, nim } = req.body;
-
-  if (!nama || !nim) {
-    return res.status(400).json({ error: "Nama dan NIM wajib diisi!" });
-  }
-
   try {
-    const query = "INSERT INTO absensi (nama, nim) VALUES (?, ?)";
-    await db.execute(query, [nama, nim]);
-    res.json({ message: "Data berhasil disimpan!" });
-  } catch (error) {
-    if (error.code === "ER_DUP_ENTRY") {
-      res.status(400).json({ error: "NIM sudah terdaftar!" });
-    } else {
-      res.status(500).json({ error: "Terjadi kesalahan server!" });
+    const { nama, nim } = req.body;
+    if (!nama || !nim) {
+      return res.status(400).json({ message: "Nama dan NIM wajib diisi" });
     }
+    await db2.query("INSERT INTO users (nama, nim) VALUES (?, ?)", [nama, nim]);
+    res.status(201).json({ message: "Data berhasil disimpan" });
+  } catch (error) {
+    console.error("Error di backend:", error);
+    res.status(500).json({ message: "Terjadi kesalahan di server" });
   }
 });
 
