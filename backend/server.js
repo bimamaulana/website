@@ -104,7 +104,7 @@ app.post("/data", (req, res) => {
 app.post("/data2", (req, res) => {
   const { nama, nim } = req.body;
 
-  const sql = "INSERT INTO history (nama, nim) VALUES (?, ?)"; // Sesuaikan dengan tabel yang digunakan
+  const sql = "INSERT IGNORE INTO history (nama, nim) VALUES (?, ?)"; // Sesuaikan dengan tabel yang digunakan
 
   db2.query(sql, [nama, nim], (err, result) => {
     if (err) {
