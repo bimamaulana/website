@@ -23,7 +23,7 @@ const Dashboard = () => {
   const handleCreate = async () => {
     if (user?.nama && user?.nim) {
       try {
-        const response = await axios.post(`${backendUrl}/api/save`, {
+        const response = await axios.post(`${backendUrl}/data2`, {
           nama: user.nama,
           nim: user.nim,
         });

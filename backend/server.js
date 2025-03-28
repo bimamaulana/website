@@ -101,33 +101,25 @@ app.post("/data", (req, res) => {
 // curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"nama": "John Doe", "nim": "12345678"}'
 
 // Endpoint untuk menyimpan data absen
-app.post("/api/save", async (req, res) => {
-  try {
-    const { nama, nim } = req.body;
-    if (!nama || !nim) {
-      return res.status(400).json({ message: "Nama dan NIM wajib diisi" });
-    }
-    db2.query(
-      "INSERT INTO users (nama, nim) VALUES (?, ?)",
-      [nama, nim],
-      (err, result) => {
-        if (err) {
-          console.error("Error di backend:", err);
-          return res
-            .status(500)
-            .json({ message: "Terjadi kesalahan di server" });
-        }
-        console.log("Data berhasil disimpan, ID:", result.insertId);
-        res
-          .status(201)
-          .json({ message: "Data berhasil disimpan", id: result.insertId });
-      }
-    );
-    res.status(201).json({ message: "Data berhasil disimpan" });
-  } catch (error) {
-    console.error("Error di backend:", error);
-    res.status(500).json({ message: "Terjadi kesalahan di server" });
+app.post("/data2", (req, res) => {
+  const { nama, nim } = req.body;
+
+  if (!nama || !nim) {
+    return res.status(400).json({ message: "Nama dan NIM wajib diisi" });
   }
+
+  const sql = "INSERT INTO history (nama, nim) VALUES (?, ?)"; // Sesuaikan dengan tabel yang digunakan
+
+  db2.query(sql, [nama, nim], (err, result) => {
+    if (err) {
+      console.error("Error di backend:", err);
+      return res.status(500).json({ message: "Terjadi kesalahan di server" });
+    }
+    console.log("Data berhasil disimpan, ID:", result.insertId);
+    res
+      .status(201)
+      .json({ message: "Data berhasil disimpan", id: result.insertId });
+  });
 });
 
 //delete
