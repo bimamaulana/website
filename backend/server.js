@@ -101,13 +101,20 @@ app.post("/data", (req, res) => {
 // curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"nama": "John Doe", "nim": "12345678"}'
 
 // Endpoint untuk menyimpan data absen
-app.post("/data2", async (req, res) => {
+app.post("/data2", (req, res) => {
   const { nama, nim } = req.body;
-  const query = "INSERT INTO users (nama, nim) VALUES (?, ?)";
 
-  db.query(query, [nama, nim], (err) => {
-    if (err) return res.status(500).json({ message: "Gagal menyimpan data" });
-    res.json({ message: "Data berhasil disimpan" });
+  const sql = "INSERT INTO history (nama, nim) VALUES (?, ?)"; // Sesuaikan dengan tabel yang digunakan
+
+  db2.query(sql, [nama, nim], (err, result) => {
+    if (err) {
+      console.error("Error di backend:", err);
+      return res.status(500).json({ message: "Terjadi kesalahan di server" });
+    }
+    console.log("Data berhasil disimpan, ID:", result.insertId);
+    res
+      .status(201)
+      .json({ message: "Data berhasil disimpan", id: result.insertId });
   });
 });
 
