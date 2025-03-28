@@ -4,7 +4,7 @@ const History = () => {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    fetch("https://backendmu.railway.app/history") // Ganti dengan URL backend Railway
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/history`)
       .then((res) => res.json())
       .then((data) => setHistory(data))
       .catch((err) => console.error("Gagal mengambil data:", err));
