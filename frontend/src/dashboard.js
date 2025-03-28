@@ -79,7 +79,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/save${id}`,
+        `${process.env.REACT_APP_BACKEND_URL}/api/save/${id}`,
         data
       );
 
