@@ -12,6 +12,7 @@ import Signup from "./signup";
 import Dashboard from "./dashboard";
 import Admin from "./admin";
 import QR from "./qr"; // Import QR.js
+import History from "./history"; // Import halaman history
 
 const App = () => {
   return (
@@ -32,6 +33,9 @@ const App = () => {
           </Link>
           <Link to="/qr" className="text-blue-500">
             | QR Code |
+          </Link>
+          <Link to="/history" className="text-blue-500">
+            | History |
           </Link>
         </nav>
 
@@ -56,6 +60,7 @@ const App = () => {
               </ProtectedUserRoute>
             }
           />
+          <Route path="/history" element={<History />} />
           <Route path="/qr" element={<QR />} />
         </Routes>
       </div>

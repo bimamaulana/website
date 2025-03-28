@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
+import QrScanner from "qr-scanner"; // Library untuk scan QR Code
 import "./styles/QR.css";
 
 const QR = () => {
@@ -17,6 +18,7 @@ const QR = () => {
   const [qrValue, setQrValue] = useState(
     `Laboratorium - ${getFormattedTime()}`
   );
+  const [scanResult, setScanResult] = useState(null);
 
   useEffect(() => {
     const updateTimestamp = () => {
@@ -39,6 +41,42 @@ const QR = () => {
     return () => clearInterval(updateTimestamp);
   }, []);
 
+  // Fungsi untuk menangani scan QR Code
+  const handleScan = (data) => {
+    if (data) {
+      setScanResult(data); // Simpan hasil scan
+
+      const [nama, nim] = data.split(","); // Format QR: "Nama,NIM"
+
+      fetch("https://backendmu.railway.app/absen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nama, nim }),
+      })
+        .then((res) => res.json())
+        .then((response) => {
+          if (response.success) {
+            alert("✅ Absen berhasil!");
+          } else {
+            alert("❌ Gagal absen!");
+          }
+        })
+        .catch((err) => console.error("Error:", err));
+    }
+  };
+
+  // Fungsi untuk memulai scanner QR
+  useEffect(() => {
+    const videoElement = document.createElement("video");
+    const qrScanner = new QrScanner(videoElement, (result) => {
+      handleScan(result.data);
+    });
+
+    qrScanner.start(); // Mulai scanner
+
+    return () => qrScanner.stop(); // Hentikan scanner saat komponen di-unmount
+  }, []);
+
   return (
     <div className="qr-container">
       <div className="qr-box">
@@ -49,6 +87,17 @@ const QR = () => {
         </div>
         <p className="qr-text">Isi QR Code: {qrValue}</p>
       </div>
+
+      {/* Hasil scan ditampilkan */}
+      {scanResult && (
+        <div className="qr-box">
+          <h2 className="qr-title">Hasil Scan:</h2>
+          <p className="qr-text">{scanResult}</p>
+        </div>
+      )}
+
+      {/* Video untuk scanning QR Code */}
+      <video className="qr-scanner-video" />
     </div>
   );
 };
