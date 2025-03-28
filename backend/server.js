@@ -101,21 +101,24 @@ app.post("/data", (req, res) => {
 // curl -X POST http://localhost:8000/data -H "Content-Type: application/json" -d '{"nama": "John Doe", "nim": "12345678"}'
 
 // Endpoint untuk menyimpan data absen
-app.post("/api/save", (req, res) => {
-  const { nama, nim, waktu } = req.body;
+app.post("/api/save", async (req, res) => {
+  const { nama, nim } = req.body;
 
-  if (!nama || !nim || !waktu) {
-    return res.status(400).json({ error: "Semua data harus diisi" });
+  if (!nama || !nim) {
+    return res.status(400).json({ error: "Nama dan NIM wajib diisi!" });
   }
 
-  const sql = "INSERT INTO history (nama, nim, waktu) VALUES (?, ?, ?)";
-  db2.query(sql, [nama, nim, waktu], (err, result) => {
-    if (err) {
-      console.error("Error saat menyimpan data:", err);
-      return res.status(500).json({ error: "Gagal menyimpan data" });
+  try {
+    const query = "INSERT INTO absensi (nama, nim) VALUES (?, ?)";
+    await db.execute(query, [nama, nim]);
+    res.json({ message: "Data berhasil disimpan!" });
+  } catch (error) {
+    if (error.code === "ER_DUP_ENTRY") {
+      res.status(400).json({ error: "NIM sudah terdaftar!" });
+    } else {
+      res.status(500).json({ error: "Terjadi kesalahan server!" });
     }
-    res.json({ message: "Data berhasil disimpan", id: result.insertId });
-  });
+  }
 });
 
 //delete
