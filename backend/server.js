@@ -38,6 +38,22 @@ db.connect((err) => {
   console.log("Terhubung ke database");
 });
 
+// Koneksi ke database kedua
+const db2 = mysql.createConnection({
+  host: process.env.DB2_HOST,
+  user: process.env.DB2_USERNAME,
+  password: process.env.DB2_PASSWORD,
+  database: process.env.DB2_DBNAME,
+});
+
+db2.connect((err) => {
+  if (err) {
+    console.error("Koneksi ke database 2 gagal:", err);
+    process.exit(1);
+  }
+  console.log("Terhubung ke database 2");
+});
+
 app.get("/", (req, res) => {
   res.send("Server berjalan!");
 });
@@ -55,6 +71,19 @@ app.get("/data", (req, res) => {
 });
 //cara jalankan di terminal:
 //curl -X GET http://localhost:8000/data
+
+//endpoint db kedua
+app.get("/data2", (req, res) => {
+  db2.query("SELECT * FROM mahasiswa", (err, results) => {
+    if (err) {
+      res.status(500).send("Gagal mengambil data dari DB2");
+      return;
+    }
+    res.json(results);
+  });
+});
+//cara jalankan di terminal:
+//curl -X GET http://localhost:8000/data2
 
 //endpoint menambah data
 app.post("/data", (req, res) => {
