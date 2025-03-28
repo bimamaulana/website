@@ -73,7 +73,8 @@ app.get("/data", (req, res) => {
 
 //endpoint db kedua
 app.get("/data2", (req, res) => {
-  db2.query("SELECT * FROM history", (err, results) => {
+  const sql2 = "SELECT * FROM history";
+  db2.query(sql2, (err, results) => {
     if (err) {
       res.status(500).send("Gagal mengambil data dari DB2");
       return;
