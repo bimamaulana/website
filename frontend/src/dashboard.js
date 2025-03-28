@@ -8,6 +8,8 @@ const Dashboard = () => {
 
   const [scanResult, setScanResult] = useState("");
   const [isSaved, setIsSaved] = useState(false);
+  const [scannedNama, setScannedNama] = useState("");
+  const [scannedNim, setScannedNim] = useState("");
   const scannerRef = useRef(null);
 
   const getCurrentTimeString = () => {
@@ -31,12 +33,15 @@ const Dashboard = () => {
     });
 
     scanner.render((decodedText) => {
-      const regex = /^Laboratorium - (\d{2}\/\d{2}\/\d{4}), (\d{2}:\d{2})$/;
+      const regex =
+        /^Laboratorium - (\d{2}\/\d{2}\/\d{4}), (\d{2}:\d{2}), (.*), (\d+)$/;
       const match = decodedText.match(regex);
 
       if (match) {
         const scannedDateTime = `${match[1]}, ${match[2]}`;
         const currentTime = getCurrentTimeString();
+        setScannedNama(match[3]);
+        setScannedNim(match[4]);
 
         if (scannedDateTime === currentTime) {
           setScanResult("Berhasil");
@@ -71,24 +76,27 @@ const Dashboard = () => {
   const handleSaveToDatabase = async () => {
     if (!user) return;
 
+    const namaBaru =
+      prompt(
+        "Masukkan nama (biarkan kosong jika tidak ada perubahan):",
+        scannedNama
+      ) || scannedNama;
+    const nimBaru =
+      prompt(
+        "Masukkan NIM (biarkan kosong jika tidak ada perubahan):",
+        scannedNim
+      ) || scannedNim;
+
     const data = {
-      nama: user.nama,
-      nim: user.nim,
+      nama: namaBaru,
+      nim: nimBaru,
       waktu: getCurrentTimeString(),
     };
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/save`,
-        data
-      );
-
-      if (response.status === 200) {
-        setIsSaved(true);
-        alert("Data berhasil disimpan!");
-      } else {
-        alert("Gagal menyimpan data.");
-      }
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/save`, data);
+      setIsSaved(true);
+      alert("Data berhasil disimpan!");
     } catch (error) {
       console.error("Error:", error);
       alert("Terjadi kesalahan saat menyimpan data.");
