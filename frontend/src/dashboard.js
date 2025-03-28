@@ -76,16 +76,8 @@ const Dashboard = () => {
   const handleSaveToDatabase = async () => {
     if (!user) return;
 
-    const namaBaru =
-      prompt(
-        "Masukkan nama (biarkan kosong jika tidak ada perubahan):",
-        scannedNama
-      ) || scannedNama;
-    const nimBaru =
-      prompt(
-        "Masukkan NIM (biarkan kosong jika tidak ada perubahan):",
-        scannedNim
-      ) || scannedNim;
+    const namaBaru = scannedNama;
+    const nimBaru = scannedNim;
 
     const data = {
       nama: namaBaru,
