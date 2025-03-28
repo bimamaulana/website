@@ -60,11 +60,8 @@ const Dashboard = () => {
 
         if (scannedDateTime === currentTime) {
           setScanResult("Berhasil");
-
           // Kirim data user ke database jika berhasil scan
-          if (user) {
-            sendToDatabase(user.nama, user.nim, scannedDateTime);
-          }
+          sendToDatabase(user.nama, user.nim, scannedDateTime);
         } else {
           setScanResult("Waktu QR Code tidak valid");
         }
