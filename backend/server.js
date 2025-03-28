@@ -74,7 +74,7 @@ app.get("/data", (req, res) => {
 //endpoint db kedua
 app.get("/data2", (req, res) => {
   const sql2 = "SELECT * FROM history";
-  db.query(sql2, (err, results) => {
+  db2.query(sql2, (err, results) => {
     if (err) {
       res.status(500).send("Gagal mengambil data dari DB2");
       return;
@@ -107,7 +107,7 @@ app.post("/api/save", async (req, res) => {
     if (!nama || !nim) {
       return res.status(400).json({ message: "Nama dan NIM wajib diisi" });
     }
-    await db2.query("INSERT INTO users (nama, nim) VALUES (?, ?)", [nama, nim]);
+    await db.query("INSERT INTO users (nama, nim) VALUES (?, ?)", [nama, nim]);
     res.status(201).json({ message: "Data berhasil disimpan" });
   } catch (error) {
     console.error("Error di backend:", error);
