@@ -27,6 +27,7 @@ const Dashboard = () => {
           nama: user.nama,
           nim: user.nim,
         });
+
         console.log("Response:", response.data);
         setScanResult("Data berhasil disimpan!");
       } catch (error) {
@@ -34,6 +35,7 @@ const Dashboard = () => {
           "Gagal menambahkan data:",
           error.response?.data || error.message
         );
+        setScanResult("Terjadi kesalahan, coba lagi.");
       }
     }
   };
