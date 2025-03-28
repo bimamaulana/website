@@ -109,7 +109,7 @@ app.post("/api/save", (req, res) => {
   }
 
   const sql = "INSERT INTO absen (nama, nim, waktu) VALUES (?, ?, ?)";
-  db.query(sql, [nama, nim, waktu], (err, result) => {
+  db2.query(sql, [nama, nim, waktu], (err, result) => {
     if (err) {
       console.error("Error saat menyimpan data:", err);
       return res.status(500).json({ error: "Gagal menyimpan data" });
