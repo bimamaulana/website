@@ -108,7 +108,7 @@ app.post("/api/save", (req, res) => {
     return res.status(400).json({ error: "Semua data harus diisi" });
   }
 
-  const sql = "INSERT INTO absen (nama, nim, waktu) VALUES (?, ?, ?)";
+  const sql = "INSERT INTO history (nama, nim, waktu) VALUES (?, ?, ?)";
   db2.query(sql, [nama, nim, waktu], (err, result) => {
     if (err) {
       console.error("Error saat menyimpan data:", err);
