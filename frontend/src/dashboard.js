@@ -6,6 +6,7 @@ const Dashboard = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
   const scannerRef = useRef(null);
 
   const getCurrentTimeString = () => {
@@ -16,28 +17,6 @@ const Dashboard = () => {
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
-  };
-
-  const sendToDatabase = async (nama, nim, waktu) => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/absen`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nama, nim, waktu }),
-        }
-      );
-
-      const data = await response.json();
-      if (data.success) {
-        console.log("✅ Data berhasil disimpan:", data);
-      } else {
-        console.error("❌ Gagal menyimpan data:", data.message);
-      }
-    } catch (error) {
-      console.error("❌ Error mengirim data:", error);
-    }
   };
 
   const startScanner = useCallback(() => {
@@ -60,8 +39,7 @@ const Dashboard = () => {
 
         if (scannedDateTime === currentTime) {
           setScanResult("Berhasil");
-          // Kirim data user ke database jika berhasil scan
-          sendToDatabase(user.nama, user.nim, scannedDateTime);
+          setIsSaved(false);
         } else {
           setScanResult("Waktu QR Code tidak valid");
         }
@@ -73,7 +51,7 @@ const Dashboard = () => {
     });
 
     scannerRef.current = scanner;
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     startScanner();
@@ -87,6 +65,39 @@ const Dashboard = () => {
   const handleRescan = () => {
     setScanResult("");
     startScanner();
+  };
+
+  const handleSaveToDatabase = async () => {
+    if (!user) return;
+
+    const data = {
+      nama: user.nama,
+      nim: user.nim,
+      waktu: getCurrentTimeString(),
+    };
+
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/save`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (response.ok) {
+        setIsSaved(true);
+        alert("Data berhasil disimpan!");
+      } else {
+        alert("Gagal menyimpan data.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan saat menyimpan data.");
+    }
   };
 
   const handleLogout = () => {
@@ -111,6 +122,17 @@ const Dashboard = () => {
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
           <p>{scanResult}</p>
+          {scanResult === "Berhasil" && !isSaved && (
+            <button
+              onClick={handleSaveToDatabase}
+              className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Simpan ke Database
+            </button>
+          )}
+          {isSaved && (
+            <p className="text-green-600 mt-2">Data sudah disimpan!</p>
+          )}
           <button
             onClick={handleRescan}
             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
