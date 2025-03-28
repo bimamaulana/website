@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import axios from "axios";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
 const Dashboard = () => {
@@ -10,7 +11,7 @@ const Dashboard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const scannerRef = useRef(null);
 
-  const backendUrl = process.env.REACT_APP_BACKEND_URL; // Gunakan env untuk URL backend
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const getCurrentTimeString = () => {
     const now = new Date();
@@ -82,24 +83,23 @@ const Dashboard = () => {
     if (!user) return alert("User tidak ditemukan!");
 
     setIsSubmitting(true);
-    //const waktu = getCurrentTimeString();
 
     try {
-      const response = await fetch(`${backendUrl}/api/save`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nama: user.nama, nim: user.nim }),
+      const response = await axios.post(`${backendUrl}/api/save`, {
+        nama: user.nama,
+        nim: user.nim,
       });
 
-      const data = await response.json();
-      if (data.message) {
+      if (response.data.message) {
         alert("Data berhasil disimpan!");
         setIsScanSuccessful(false);
       } else {
-        alert("Gagal menyimpan data: " + data.error);
+        alert("Gagal menyimpan data: " + response.data.error);
       }
     } catch (error) {
-      alert("Terjadi kesalahan: " + error.message);
+      alert(
+        "Terjadi kesalahan: " + (error.response?.data?.error || error.message)
+      );
     } finally {
       setIsSubmitting(false);
     }
