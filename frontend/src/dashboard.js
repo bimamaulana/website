@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
+import axios from "axios";
 
 const Dashboard = () => {
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
+  const [nama, setNama] = useState(user?.nama || "");
+  const [nim, setNim] = useState(user?.nim || "");
   const scannerRef = useRef(null);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -19,14 +22,16 @@ const Dashboard = () => {
     return `${day}/${month}/${year}, ${hours}:${minutes}`;
   };
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await axios.get(`${backendUrl}/data`);
-      setData(response.data);
-    } catch (error) {
-      console.error("Gagal mengambil data", error);
+  const handleCreate = async () => {
+    if (nama && nim) {
+      try {
+        await axios.post(`${backendUrl}/api/save`, { nama, nim });
+        setScanResult("Data berhasil disimpan!");
+      } catch (error) {
+        console.error("Gagal menambahkan data", error);
+      }
     }
-  }, [backendUrl]);
+  };
 
   const startScanner = useCallback(() => {
     if (scannerRef.current) {
@@ -97,6 +102,14 @@ const Dashboard = () => {
         <div className="mt-4 p-4 border border-gray-800">
           <h2 className="text-lg font-semibold">Hasil Scan</h2>
           <p>{scanResult}</p>
+          {scanResult === "Berhasil" && (
+            <button
+              onClick={handleCreate}
+              className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Save Data
+            </button>
+          )}
           <button
             onClick={handleRescan}
             className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
