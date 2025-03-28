@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
+import axios from "axios";
 
 const Dashboard = () => {
   const storedUser = localStorage.getItem("user");
@@ -77,18 +78,12 @@ const Dashboard = () => {
     };
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL}/api/save`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
+        data
       );
 
-      if (response.ok) {
+      if (response.status === 200) {
         setIsSaved(true);
         alert("Data berhasil disimpan!");
       } else {
