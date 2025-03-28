@@ -104,18 +104,12 @@ app.post("/data", (req, res) => {
 app.post("/data2", (req, res) => {
   const { nama, nim } = req.body;
 
-  if (!nama || !nim) {
-    return res.status(400).json({ message: "Nama dan NIM wajib diisi" });
-  }
-
-  const sql = "INSERT IGNORE INTO history (nama, nim) VALUES (?, ?)"; // Sesuaikan dengan tabel yang digunakan
-
+  const sql = "INSERT INTO history (nama, nim) VALUES (?, ?)";
   db2.query(sql, [nama, nim], (err, result) => {
     if (err) {
-      console.error("Error di backend:", err);
-      return res.status(500).json({ message: "Terjadi kesalahan di server" });
+      console.error("Gagal menambahkan data:", err);
+      return res.status(500).json({ message: "Gagal menyimpan data" });
     }
-    console.log("Data berhasil disimpan, ID:", result.insertId);
     res
       .status(201)
       .json({ message: "Data berhasil disimpan", id: result.insertId });
