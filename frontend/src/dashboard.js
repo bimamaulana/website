@@ -6,7 +6,11 @@ const Dashboard = () => {
   const user = storedUser ? JSON.parse(storedUser) : null;
 
   const [scanResult, setScanResult] = useState("");
+  const [isScanSuccessful, setIsScanSuccessful] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const scannerRef = useRef(null);
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL; // Gunakan env untuk URL backend
 
   const getCurrentTimeString = () => {
     const now = new Date();
@@ -38,11 +42,14 @@ const Dashboard = () => {
 
         if (scannedDateTime === currentTime) {
           setScanResult("Berhasil");
+          setIsScanSuccessful(true);
         } else {
           setScanResult("Waktu QR Code tidak valid");
+          setIsScanSuccessful(false);
         }
       } else {
         setScanResult("QR Code tidak valid");
+        setIsScanSuccessful(false);
       }
 
       scanner.clear().catch(() => {});
@@ -62,12 +69,42 @@ const Dashboard = () => {
 
   const handleRescan = () => {
     setScanResult("");
+    setIsScanSuccessful(false);
     startScanner();
   };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     window.location.reload();
+  };
+
+  const handleSaveToDatabase = async () => {
+    if (!user) return alert("User tidak ditemukan!");
+
+    setIsSubmitting(true);
+    const waktu = getCurrentTimeString();
+
+    try {
+      const response = await fetch(`${backendUrl}/api/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nama: user.nama, nim: user.nim, waktu }),
+      });
+
+      const data = await response.json();
+      if (data.message) {
+        alert("Data berhasil disimpan!");
+        setIsScanSuccessful(false);
+      } else {
+        alert("Gagal menyimpan data: " + data.error);
+      }
+    } catch (error) {
+      alert("Terjadi kesalahan: " + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -94,6 +131,15 @@ const Dashboard = () => {
             Scan Lagi
           </button>
         </div>
+      )}
+      {isScanSuccessful && (
+        <button
+          onClick={handleSaveToDatabase}
+          className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Mengirim..." : "Kirim Data"}
+        </button>
       )}
       <button
         onClick={handleLogout}
