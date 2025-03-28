@@ -1,5 +1,5 @@
 const express = require("express");
-const mysql = require("mysql2");
+const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const QRCode = require("qrcode");
@@ -40,7 +40,7 @@ db.connect((err) => {
 // Koneksi ke database kedua
 const db2 = mysql.createConnection({
   host: process.env.DB2_HOST,
-  user: process.env.DB2_USERNAME,
+  user: process.env.DB2_USER,
   password: process.env.DB2_PASSWORD,
   database: process.env.DB2_DBNAME,
 });
