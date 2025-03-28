@@ -107,7 +107,22 @@ app.post("/api/save", async (req, res) => {
     if (!nama || !nim) {
       return res.status(400).json({ message: "Nama dan NIM wajib diisi" });
     }
-    await db.query("INSERT INTO users (nama, nim) VALUES (?, ?)", [nama, nim]);
+    db2.query(
+      "INSERT INTO users (nama, nim) VALUES (?, ?)",
+      [nama, nim],
+      (err, result) => {
+        if (err) {
+          console.error("Error di backend:", err);
+          return res
+            .status(500)
+            .json({ message: "Terjadi kesalahan di server" });
+        }
+        console.log("Data berhasil disimpan, ID:", result.insertId);
+        res
+          .status(201)
+          .json({ message: "Data berhasil disimpan", id: result.insertId });
+      }
+    );
     res.status(201).json({ message: "Data berhasil disimpan" });
   } catch (error) {
     console.error("Error di backend:", error);
